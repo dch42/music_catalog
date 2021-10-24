@@ -10,7 +10,7 @@ path = sys.argv[1]
 hasher = hashlib.md5()
 extensions = [".mp3", ".m4a"]
 
-db = sqlite3.connect("data/music_library.db")
+db = sqlite3.connect("./data/music_library.db")
 cursor = db.cursor()
 
 def menu_loop(menu):
