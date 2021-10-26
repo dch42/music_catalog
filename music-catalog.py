@@ -38,6 +38,19 @@ def go_back(question):
 
 def iter_music(path, db, cursor, hasher):
     """Scan for audio files and add to database"""
+    cursor.execute("""CREATE TABLE IF NOT EXISTS music_info(
+    Hash TEXT PRIMARY KEY,
+    Album_Artist TEXT,
+    Artist TEXT, 
+    Year TEXT, 
+    Album TEXT, 
+    Track_Number INTEGER, 
+    Title TEXT,
+    Bitrate INTEGER, 
+    Sample_Frequency INTEGER, 
+    Mode TEXT, 
+    Path TEXT)
+    """)
     for root, dirs, files in os.walk(path, topdown=False):
         for filename in files:
             if filename.endswith(tuple(extensions)):
@@ -63,19 +76,6 @@ def iter_music(path, db, cursor, hasher):
 
 def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash):
     """Insert parsed info into database"""
-    cursor.execute("""CREATE TABLE IF NOT EXISTS music_info(
-        Hash TEXT PRIMARY KEY,
-        Album_Artist TEXT,
-        Artist TEXT, 
-        Year TEXT, 
-        Album TEXT, 
-        Track_Number INTEGER, 
-        Title TEXT,
-        Bitrate INTEGER, 
-        Sample_Frequency INTEGER, 
-        Mode TEXT, 
-        Path TEXT)
-        """)
     song_info = [(
         blake2b_hash,
         str(audio_obj.tag.album_artist),
@@ -105,20 +105,22 @@ def export_to_csv(db):
 
 def export_all(db):
     """Export all music info to csv"""
-    music_df = pd.read_sql_query("SELECT * FROM music_info", db)
-    music_df.to_csv('data/csv_exports/music_database-%s-%s.csv' % (date, time), index=False)
-    print("Exported to 'data/csv_exports/music_database-%s-%s.csv'" % (date, time))
-    go_back('Go back to menu? y/N: ')
+    try:
+        music_df = pd.read_sql_query("SELECT * FROM music_info", db)
+        music_df.to_csv('data/csv_exports/music_database-%s-%s.csv' % (date, time), index=False)
+        print("\nSUCCESS!\nExported all music info to 'data/csv_exports/music_database-%s-%s.csv'" % (date, time))
+    except Exception as e: print("\033[91m Export failed: ", e, "\033[0m")
+    go_back('\nGo back to menu? y/N: ')
 
 def export_albums(db):
     """Export album info to csv"""
-    music_df = pd.read_sql_query("SELECT Album_Artist, Year, Album FROM music_info", db)
-    music_df = music_df.drop_duplicates()
-    music_df.to_csv('data/csv_exports/albums_database-%s-%s.csv' % (date, time), index=False)
-    print("Exported to 'data/csv_exports/albums_database-%s-%s.csv'" % (date, time))
-    go_back('Go back to menu? y/N: ')
-
-
+    try:
+        music_df = pd.read_sql_query("SELECT Album_Artist, Year, Album FROM music_info", db)
+        music_df = music_df.drop_duplicates()
+        music_df.to_csv('data/csv_exports/albums_database-%s-%s.csv' % (date, time), index=False)
+        print("\nSUCCESS!\nExported album data to 'data/csv_exports/albums_database-%s-%s.csv'" % (date, time))
+    except Exception as e: print("\033[91m Export failed: ", e, "\033[0m")
+    go_back('\nGo back to menu? y/N: ')
 
 main_menu = {
     "a": [iter_music, lambda: iter_music(path, db, cursor, hasher), "(a)dd"],
