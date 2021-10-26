@@ -1,5 +1,7 @@
 # music-catalog
-Populates a SQLite database with information parsed from audio files and their tags:
+A simple script to populate a SQLite database with information parsed from mp3 files and their tags for easier searching and CSV export. 
+
+Currently stores the following data:
 
 - Artist
 - Album Artist
@@ -13,13 +15,19 @@ Populates a SQLite database with information parsed from audio files and their t
 - File Path
 - BLAKE2B Hash
 
-Files are hashed during iteration to use as PRIMARY KEY to avoid duplicate data entries.
+Files are hashed during iteration to avoid duplicate data entries, and the database is checked for existing path entries prior to hashing.
 
 ## Usage
 ~~~
 python3 music-catalog.py ~/path_to_music
 ~~~
-For extra info invoke with `--help`
+To view this README invoke with `--help`
+
+## Storage
+
+The database resides at `data/music_library.db`.
+
+Timestamped CSV exports are stored in `data/csv_exports`
 
 ## Features
 - Export to CSV
