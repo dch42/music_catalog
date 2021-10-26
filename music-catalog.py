@@ -93,11 +93,6 @@ def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash):
     db.commit()
 
     print("\033[1m\033[96mSUCCESS:\033[0m Info for \033[1m%s - %s\033[0m inserted to the table!\033[0m" % (str(audio_obj.tag.artist), str(audio_obj.tag.title)))
-
-def search_db(cursor):
-    """Search music database"""
-    print("DEAL WITH LATER")
-    pass
     
 def export_to_csv(db):
     """Export database to csv"""
@@ -121,6 +116,12 @@ def export_albums(db):
         print("\nSUCCESS!\nExported album data to 'data/csv_exports/albums_database-%s-%s.csv'" % (date, time))
     except Exception as e: print("\033[91m Export failed: ", e, "\033[0m")
     go_back('\nGo back to menu? y/N: ')
+
+def search_db(cursor):
+    """Search music database"""
+    #TODO
+    print("DEAL WITH LATER")
+    pass
 
 main_menu = {
     "a": [iter_music, lambda: iter_music(path, db, cursor, hasher), "(a)dd"],
