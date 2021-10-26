@@ -11,7 +11,7 @@ Populates a SQLite database with information parsed from audio files and their t
 - Sample Frequency
 - Mode
 - File Path
-- MD5 Hash
+- BLAKE2B Hash
 
 Files are hashed during iteration to use as PRIMARY KEY to avoid duplicate data entries.
 
