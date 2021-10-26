@@ -1,6 +1,8 @@
 # music-catalog
 A simple script to populate a SQLite database with information parsed from mp3 files and their tags for easier searching and CSV export. 
 
+![Exporting to CSV](https://raw.githubusercontent.com/dch42/music-catalog/main/data/screenshots/export.gif)
+
 Currently stores the following data:
 
 - Artist
