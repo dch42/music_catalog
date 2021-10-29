@@ -68,12 +68,11 @@ def iter_music(path, db, cursor, hasher):
                         print("\033[1m\033[95mBLAKE2B HASH:\033[0m\033[0m", blake2b_hash)
                     print("Parsing tag data from \033[4m%s\033[0m..." % filename)
                     audio_obj = TinyTag.get("%s" % audio_file)
-                    #audio_obj = eyed3.load("%s" % audio_file)
                     try:
                         add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash)
                     except Exception as e: print("\033[91m Insert failed: ", e, "\033[0m")
                 else: 
-                    print("Path (%s) already exists, skipping file..." % audio_file)
+                    print("\033[92m%s\033[0m already exists in db, skipping file..." % filename)
     print("\nDONE!\n")
     go_back('Go back to menu? y/N: ')
 
@@ -94,18 +93,6 @@ def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash):
         str(audio_file)
 
     )]
-    # song_info = [(
-    #     blake2b_hash,
-    #     str(audio_obj.tag.album_artist),
-    #     str(audio_obj.tag.artist), 
-    #     str(audio_obj.tag.getBestDate()), 
-    #     str(audio_obj.tag.album), 
-    #     int(audio_obj.tag.track_num[0]), 
-    #     str(audio_obj.tag.title), 
-    #     int(audio_obj.info.bit_rate[1]), 
-    #     int(audio_obj.info.sample_freq), 
-    #     str(audio_obj.info.mode), 
-    #     str(audio_file))]
 
     cursor.executemany("INSERT INTO music_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", song_info)
     db.commit()
