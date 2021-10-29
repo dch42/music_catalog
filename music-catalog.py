@@ -1,4 +1,5 @@
 import eyed3, sys, os, pyfiglet, sqlite3, hashlib
+from tinytag import TinyTag
 import pandas as pd
 from datetime import date, datetime, time
 
@@ -48,7 +49,8 @@ def iter_music(path, db, cursor, hasher):
     Title TEXT,
     Bitrate INTEGER, 
     Sample_Frequency INTEGER, 
-    Mode TEXT, 
+    Genre TEXT,
+    Duration INTEGER,
     Path TEXT)
     """)
     for root, dirs, files in os.walk(path, topdown=False):
@@ -65,7 +67,8 @@ def iter_music(path, db, cursor, hasher):
                         blake2b_hash = str(hasher.hexdigest())
                         print("\033[1m\033[95mBLAKE2B HASH:\033[0m\033[0m", blake2b_hash)
                     print("Parsing tag data from \033[4m%s\033[0m..." % filename)
-                    audio_obj = eyed3.load("%s" % audio_file)
+                    audio_obj = TinyTag.get("%s" % audio_file)
+                    #audio_obj = eyed3.load("%s" % audio_file)
                     try:
                         add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash)
                     except Exception as e: print("\033[91m Insert failed: ", e, "\033[0m")
@@ -78,24 +81,39 @@ def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash):
     """Insert parsed info into database"""
     song_info = [(
         blake2b_hash,
-        str(audio_obj.tag.album_artist),
-        str(audio_obj.tag.artist), 
-        str(audio_obj.tag.getBestDate()), 
-        str(audio_obj.tag.album), 
-        int(audio_obj.tag.track_num[0]), 
-        str(audio_obj.tag.title), 
-        int(audio_obj.info.bit_rate[1]), 
-        int(audio_obj.info.sample_freq), 
-        str(audio_obj.info.mode), 
-        str(audio_file))]
+        audio_obj.albumartist,
+        audio_obj.artist,
+        audio_obj.year,
+        audio_obj.album,
+        audio_obj.track,
+        audio_obj.title,
+        audio_obj.bitrate,
+        audio_obj.samplerate,
+        audio_obj.genre,
+        audio_obj.duration,
+        str(audio_file)
 
-    cursor.executemany("INSERT INTO music_info VALUES (?,?,?,?,?,?,?,?,?,?,?)", song_info)
+    )]
+    # song_info = [(
+    #     blake2b_hash,
+    #     str(audio_obj.tag.album_artist),
+    #     str(audio_obj.tag.artist), 
+    #     str(audio_obj.tag.getBestDate()), 
+    #     str(audio_obj.tag.album), 
+    #     int(audio_obj.tag.track_num[0]), 
+    #     str(audio_obj.tag.title), 
+    #     int(audio_obj.info.bit_rate[1]), 
+    #     int(audio_obj.info.sample_freq), 
+    #     str(audio_obj.info.mode), 
+    #     str(audio_file))]
+
+    cursor.executemany("INSERT INTO music_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", song_info)
     db.commit()
 
     print("\033[1m\033[96mSUCCESS:\033[0m Info for \033[1m%s - %s\033[0m inserted to the table!\033[0m" % (str(audio_obj.tag.artist), str(audio_obj.tag.title)))
     
 def export_to_csv(db):
-    """Export database to csv"""
+    """Conditionally export database to csv"""
     menu_loop(export_menu)
 
 def export_all(db):
@@ -117,20 +135,47 @@ def export_albums(db):
     except Exception as e: print("\033[91m Export failed: ", e, "\033[0m")
     go_back('\nGo back to menu? y/N: ')
 
-def search_db(cursor):
-    """Search music database"""
-    #TODO
-    print("DEAL WITH LATER")
-    pass
+def export_by_bitrate(db):
+    """Export conditionally by bitrate"""
+    #can't seem to input operator as var, hence case switch :(
+    try:
+        operator = input("Operator? (=, <, >, <=, >=): ")
+        bitrate = input("Bitrate? (128, 192 etc): ")
+        if operator == "=":
+            music_df = pd.read_sql_query("SELECT * FROM music_info WHERE Bitrate = (?)", db, params=(bitrate,))
+        elif operator == "<":
+            music_df = pd.read_sql_query("SELECT * FROM music_info WHERE Bitrate < (?)", db, params=(bitrate,))
+        elif operator == ">":
+            music_df = pd.read_sql_query("SELECT * FROM music_info WHERE Bitrate > (?)", db, params=(bitrate,))
+        elif operator == "<=":
+            music_df = pd.read_sql_query("SELECT * FROM music_info WHERE Bitrate <= (?)", db, params=(bitrate,))
+        elif operator == ">=":
+            music_df = pd.read_sql_query("SELECT * FROM music_info WHERE Bitrate >= (?)", db, params=(bitrate,))
+        else:
+            print("Please input a valid operator.\n")
+        music_df.to_csv('data/csv_exports/bitrate_search-%s-%s-%s%s.csv' % (date, time, operator, bitrate), index=False)
+        print("\nSUCCESS!\nExported album data to 'data/csv_exports/bitrate_search-%s-%s-%s%s.csv'" % (date, time, operator, bitrate))
+    except Exception as e: print("\033[91m Export failed: ", e, "\033[0m")
+    go_back('\nGo back to menu? y/N: ')
+
+def export_missing(db):
+    """Export files with missing tag data"""
+    try:
+        music_df = pd.read_sql_query("SELECT  FROM music_info WHERE Album_Artist is null OR Artist is null OR Album is null OR Track_Number is null OR Genre is null OR Title is null OR Year is null", db)
+        music_df.to_csv('data/csv_exports/missing_tag_search-%s-%s.csv' % (date, time), index=False)
+        print("\nSUCCESS!\nExported album data to 'data/csv_exports/missing_tag_search-%s-%s.csv'" % (date, time))
+    except Exception as e: print("\033[91m Export failed: ", e, "\033[0m")
+    go_back('\nGo back to menu? y/N: ')
 
 main_menu = {
     "a": [iter_music, lambda: iter_music(path, db, cursor, hasher), "(a)dd"],
-    "s": [search_db, lambda: search_db(cursor), "(s)earch"],
     "e": [export_to_csv, lambda: export_to_csv(db), "(e)xport"]
 }
 export_menu = {
     "f": [export_all, lambda: export_all(db), "(f)ull"],
-    "a": [export_albums, lambda: export_albums(db), "(a)lbums"]
+    "a": [export_albums, lambda: export_albums(db), "(a)lbums"],
+    "b": [export_by_bitrate, lambda: export_by_bitrate(db), "(b)itrate"],
+    "m": [export_missing, lambda: export_missing(db), "(m)issing"]
 }
 
 ########################################################
