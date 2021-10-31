@@ -174,8 +174,13 @@ def export_albums(db):
 def export_by_bitrate(db):
     """Export conditionally by bitrate"""
     try:
-        operator = input("Operator? (=, <, >, <=, >=): ")
-        bitrate = input("Bitrate? (128, 192 etc): ")
+        valid_operators = ["=", "<", ">", "<=", ">=", "!="]
+        operator = ""
+        while operator not in valid_operators:
+            operator = input("Operator? (=, <, >, <=, >=, !=): ")
+        bitrate = ""
+        while not bitrate.isdigit():
+            bitrate = input("Bitrate? (128, 192 etc): ")
         if operator == "=":
             music_df = pd.read_sql_query(
                 "SELECT * FROM music_info WHERE Bitrate = (?)", db, params=(bitrate,))
@@ -191,11 +196,14 @@ def export_by_bitrate(db):
         elif operator == ">=":
             music_df = pd.read_sql_query(
                 "SELECT * FROM music_info WHERE Bitrate >= (?)", db, params=(bitrate,))
+        elif operator == "!=":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Bitrate != (?)", db, params=(bitrate,))
         else:
             print("Please input a valid operator.\n")
         music_df.to_csv('data/csv_exports/bitrate_search-%s-%s-%s%s.csv' %
                         (date, time, operator, bitrate), index=False)
-        print("\nSUCCESS!\nExported album data to 'data/csv_exports/bitrate_search-%s-%s-%s%s.csv'" %
+        print("\nSUCCESS!\nExported album data to 'data/csv_exports/bitrate_search-%s-%s-(%s%skbps).csv'" %
               (date, time, operator, bitrate))
     except Exception as e:
         print("\033[91m Export failed: ", e, "\033[0m")
