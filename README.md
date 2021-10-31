@@ -34,3 +34,8 @@ Timestamped CSV exports are stored in `data/csv_exports`
 
 ## Features
 - Export to CSV
+
+## TODO
+- Fix 'ID3' object has no attribute 'tag'
+- Add timestamp check to guard clause
+- Blob image data?
