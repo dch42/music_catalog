@@ -173,7 +173,6 @@ def export_albums(db):
 
 def export_by_bitrate(db):
     """Export conditionally by bitrate"""
-    # can't seem to input operator as var, hence case switch :(
     try:
         operator = input("Operator? (=, <, >, <=, >=): ")
         bitrate = input("Bitrate? (128, 192 etc): ")
