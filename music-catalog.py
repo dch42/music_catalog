@@ -211,7 +211,7 @@ def export_by_bitrate(db):
 
 
 def export_by_length(db):
-    """Export conditionally by song length"""
+    """Export conditionally by song duration"""
     try:
         valid_operators = ["=", "<", ">", "<=", ">=", "!="]
         operator = ""
