@@ -35,7 +35,7 @@ Currently supports four export formats:
 - (b)itrate: 	Export conditionally by bitrate
 - (m)issing: 	Export files with missing tag data
 
-Bitrate exports are determined using operators `=, <, >, <=, >=`
+Bitrate exports are determined using operators `=, <, >, <=, >=, !=`
 
 ## Storage
 
