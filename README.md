@@ -33,6 +33,7 @@ Currently supports four export formats:
 - (f)ull: 	    Export all music info to csv
 - (a)lbums: 	Export album info to csv
 - (b)itrate: 	Export conditionally by bitrate
+- (l)ength: 	Export conditionally by song length
 - (m)issing: 	Export files with missing tag data
 
 Bitrate exports are determined using operators `=, <, >, <=, >=, !=`
