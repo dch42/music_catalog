@@ -158,7 +158,7 @@ def export_all(db):
 
 
 def export_albums(db):
-    """Export album info to csv"""
+    """Export full album list to csv"""
     try:
         music_df = pd.read_sql_query(
             "SELECT Album_Artist, Year, Album FROM music_info", db)
