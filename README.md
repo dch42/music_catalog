@@ -1,5 +1,5 @@
 # music-catalog
-Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports.
+Populates a SQLite database with information parsed from audio files/tags for easier music library management (using [tinytag](https://github.com/devsnd/tinytag). Supports conditional CSV exports.
 
 Currently stores the following data:
 
@@ -9,11 +9,14 @@ Currently stores the following data:
 - Album
 - Track Number
 - Song Title
+- Extension
 - Bitrate
 - Sample Frequency
+- Channels
 - Genre
 - Duration (seconds)
-- File Path
+- File Size
+- Full File Path
 - Directory
 - Insert Timestamp
 - BLAKE2B Hash
