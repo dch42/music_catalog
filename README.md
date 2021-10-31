@@ -1,8 +1,5 @@
 # music-catalog
-A simple script to populate a SQLite database with information parsed from mp3 files and their tags for easier searching and CSV export. 
-
-![Scanning dir to db](https://raw.githubusercontent.com/dch42/music-catalog/main/data/screenshots/scan.gif)
-![Exporting to CSV](https://raw.githubusercontent.com/dch42/music-catalog/main/data/screenshots/export.gif)
+Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports.
 
 Currently stores the following data:
 
@@ -14,11 +11,12 @@ Currently stores the following data:
 - Song Title
 - Bitrate
 - Sample Frequency
-- Mode
+- Genre
+- Duration (seconds)
 - File Path
+- Directory
+- Insert Timestamp
 - BLAKE2B Hash
-
-Files are hashed during iteration to avoid duplicate data entries, and the database is checked for existing path entries prior to hashing.
 
 ## Usage
 ~~~
@@ -26,14 +24,22 @@ python3 music-catalog.py ~/path_to_music
 ~~~
 To view this README invoke with `--help`
 
+## CSV Export
+Currently supports four export formats:
+
+- (f)ull: 	    Export all music info to csv
+- (a)lbums: 	Export album info to csv
+- (b)itrate: 	Export conditionally by bitrate
+- (m)issing: 	Export files with missing tag data
+
+Bitrate exports are determined using operators `=, <, >, <=, >=`
+
 ## Storage
 
 The database resides at `data/music_library.db`.
 
 Timestamped CSV exports are stored in `data/csv_exports`
 
-## Features
-- Export to CSV
-
-## TODO
+## To-Do
 - Blob image data?
+- Add tagging functionality w/Discogs API
