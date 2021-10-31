@@ -86,7 +86,7 @@ def iter_music(path, db, cursor, hasher):
                         hasher.update(buf)
                         blake2b_hash = str(hasher.hexdigest())
                         # print(
-                        #     "\033[1m\033[95mBLAKE2B HASH:\033[0m\033[0m", blake2b_hash)
+                        #     "\033[1mHASH:\033[0m", blake2b_hash)
                     print(
                         "==> \033[1mParsing\033[0m tag data...")
                     audio_obj = TinyTag.get("%s" % audio_file)
