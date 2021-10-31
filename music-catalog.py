@@ -40,7 +40,6 @@ def go_back(question):
 def iter_music(path, db, cursor, hasher):
     """Scan for audio files and add to database"""
     cursor.execute("""CREATE TABLE IF NOT EXISTS music_info(
-    Hash TEXT PRIMARY KEY,
     Album_Artist TEXT,
     Artist TEXT, 
     Year TEXT, 
@@ -51,7 +50,8 @@ def iter_music(path, db, cursor, hasher):
     Sample_Frequency INTEGER, 
     Genre TEXT,
     Duration INTEGER,
-    Path TEXT)
+    Path TEXT,
+    Hash TEXT PRIMARY KEY)
     """)
     for root, dirs, files in os.walk(path, topdown=False):
         for filename in files:
@@ -67,7 +67,10 @@ def iter_music(path, db, cursor, hasher):
                         blake2b_hash = str(hasher.hexdigest())
                         print("\033[1m\033[95mBLAKE2B HASH:\033[0m\033[0m", blake2b_hash)
                     print("Parsing tag data from \033[4m%s\033[0m..." % filename)
-                    audio_obj = TinyTag.get("%s" % audio_file)
+                    try:
+                        audio_obj = TinyTag.get("%s" % audio_file)
+                    except Exception as e: print("\033[91m Parse error: ", e, "\033[0m")
+
                     try:
                         add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash)
                     except Exception as e: print("\033[91m Insert failed: ", e, "\033[0m")
@@ -79,7 +82,6 @@ def iter_music(path, db, cursor, hasher):
 def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash):
     """Insert parsed info into database"""
     song_info = [(
-        blake2b_hash,
         audio_obj.albumartist,
         audio_obj.artist,
         audio_obj.year,
@@ -90,14 +92,15 @@ def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash):
         audio_obj.samplerate,
         audio_obj.genre,
         audio_obj.duration,
-        str(audio_file)
+        str(audio_file),
+        blake2b_hash
 
     )]
 
     cursor.executemany("INSERT INTO music_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", song_info)
     db.commit()
 
-    print("\033[1m\033[96mSUCCESS:\033[0m Info for \033[1m%s - %s\033[0m inserted to the table!\033[0m" % (str(audio_obj.tag.artist), str(audio_obj.tag.title)))
+    print("\033[1m\033[96mSUCCESS:\033[0m Info for \033[1m%s - %s\033[0m inserted to the table!\033[0m" % (str(audio_obj.artist), str(audio_obj.title)))
     
 def export_to_csv(db):
     """Conditionally export database to csv"""
