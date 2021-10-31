@@ -1,4 +1,4 @@
-import eyed3, sys, os, pyfiglet, sqlite3, hashlib
+import sys, os, pyfiglet, sqlite3, hashlib
 from tinytag import TinyTag
 import pandas as pd
 from datetime import date, datetime, time
@@ -67,10 +67,7 @@ def iter_music(path, db, cursor, hasher):
                         blake2b_hash = str(hasher.hexdigest())
                         print("\033[1m\033[95mBLAKE2B HASH:\033[0m\033[0m", blake2b_hash)
                     print("Parsing tag data from \033[4m%s\033[0m..." % filename)
-                    try:
-                        audio_obj = TinyTag.get("%s" % audio_file)
-                    except Exception as e: print("\033[91m Parse error: ", e, "\033[0m")
-
+                    audio_obj = TinyTag.get("%s" % audio_file)
                     try:
                         add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash)
                     except Exception as e: print("\033[91m Insert failed: ", e, "\033[0m")
