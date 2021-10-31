@@ -201,10 +201,50 @@ def export_by_bitrate(db):
                 "SELECT * FROM music_info WHERE Bitrate != (?)", db, params=(bitrate,))
         else:
             print("Please input a valid operator.\n")
-        music_df.to_csv('data/csv_exports/bitrate_search-%s-%s-%s%s.csv' %
+        music_df.to_csv('data/csv_exports/bitrate_search-%s-%s-(%s%skbps).csv' %
                         (date, time, operator, bitrate), index=False)
         print("\nSUCCESS!\nExported album data to 'data/csv_exports/bitrate_search-%s-%s-(%s%skbps).csv'" %
               (date, time, operator, bitrate))
+    except Exception as e:
+        print("\033[91m Export failed: ", e, "\033[0m")
+    go_back('\nGo back to menu? y/N: ')
+
+
+def export_by_length(db):
+    """Export conditionally by song length"""
+    try:
+        valid_operators = ["=", "<", ">", "<=", ">=", "!="]
+        operator = ""
+        while operator not in valid_operators:
+            operator = input("Operator? (=, <, >, <=, >=, !=): ")
+        duration = ""
+        while not duration.isdigit():
+            duration = input("Song length? (in minutes, whole): ")
+        duration = int(duration) * 60
+        if operator == "=":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Duration = (?)", db, params=(duration,))
+        elif operator == "<":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Duration < (?)", db, params=(duration,))
+        elif operator == ">":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Duration > (?)", db, params=(duration,))
+        elif operator == "<=":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Duration <= (?)", db, params=(duration,))
+        elif operator == ">=":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Duration >= (?)", db, params=(duration,))
+        elif operator == "!=":
+            music_df = pd.read_sql_query(
+                "SELECT * FROM music_info WHERE Duration != (?)", db, params=(duration,))
+        else:
+            print("Please input a valid operator.\n")
+        music_df.to_csv('data/csv_exports/length_search-%s-%s-(%s%sminutes).csv' %
+                        (date, time, operator, (duration / 60)), index=False)
+        print("\nSUCCESS!\nExported album data to 'data/csv_exports/length_search-%s-%s-(%s%sminutes).csv'" %
+              (date, time, operator, (duration / 60)))
     except Exception as e:
         print("\033[91m Export failed: ", e, "\033[0m")
     go_back('\nGo back to menu? y/N: ')
@@ -231,6 +271,7 @@ export_menu = {
     "f": [export_all, lambda: export_all(db), "(f)ull"],
     "a": [export_albums, lambda: export_albums(db), "(a)lbums"],
     "b": [export_by_bitrate, lambda: export_by_bitrate(db), "(b)itrate"],
+    "l": [export_by_length, lambda: export_by_length(db), "(l)ength"],
     "m": [export_missing, lambda: export_missing(db), "(m)issing"]
 }
 
