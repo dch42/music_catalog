@@ -36,7 +36,7 @@ Currently supports four export formats:
 - (l)ength: 	Export conditionally by song duration
 - (m)issing: 	Export files with missing tag data
 
-Bitrate exports are determined using operators `=, <, >, <=, >=, !=`
+Bitrate exports are determined using operators: `=, <, >, <=, >=, !=`
 
 ## Storage
 
