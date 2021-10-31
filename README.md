@@ -36,5 +36,4 @@ Timestamped CSV exports are stored in `data/csv_exports`
 - Export to CSV
 
 ## TODO
-- Add timestamp check to guard clause
 - Blob image data?
