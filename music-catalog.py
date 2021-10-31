@@ -3,6 +3,7 @@ import os
 import pyfiglet
 import sqlite3
 import hashlib
+import pathlib
 from tinytag import TinyTag
 import pandas as pd
 from datetime import date, datetime, time
@@ -22,7 +23,7 @@ def menu_loop(menu):
     choice = None
     while choice != 'q':
         os.system("clear")
-        pyfiglet.print_figlet("Musicatalogue")
+        pyfiglet.print_figlet("Music Catalog")
         print("Music path: '%s'\n" % path)
         print("\n\033[1mMENU.........................................\033[0m\n")
         i = 1
@@ -34,7 +35,7 @@ def menu_loop(menu):
             else:
                 print('\t\033[96m%s:\033[0m \t\033[95m%s\033[0m' %
                       (value[2], value[0].__doc__))
-        print("\t\033[96m(q)uit/(b)ack\033[0m")
+        print("\t\033[96m(q)uit/back\033[0m")
         choice = input('\nAction: ').lower().strip()
         if choice in menu:
             menu[choice][1]()
@@ -55,10 +56,13 @@ def iter_music(path, db, cursor, hasher):
         Album TEXT,
         Track_Number INTEGER,
         Title TEXT,
+        Extension TEXT,
         Bitrate INTEGER,
         Sample_Frequency INTEGER,
+        Channels TEXT,
         Genre TEXT,
         Duration INTEGER,
+        Filesize TEXT,
         Path TEXT,
         Directory TEXT,
         Last_Updated TEXT,
@@ -79,6 +83,7 @@ def iter_music(path, db, cursor, hasher):
                 last_file_mod = os.stat("%s" % audio_file).st_mtime
                 last_file_mod = datetime.fromtimestamp(last_file_mod)
                 if not exists and str(last_ran[0]) < str(last_file_mod):
+                    file_extension = pathlib.Path(audio_file).suffix
                     print(
                         "\n==> \033[1mHashing\033[0m \033[4m%s\033[0m..." % filename)
                     with open(audio_file, 'rb') as file_to_hash:
@@ -92,7 +97,7 @@ def iter_music(path, db, cursor, hasher):
                     audio_obj = TinyTag.get("%s" % audio_file)
                     try:
                         add_to_db(audio_file, audio_obj,
-                                  db, cursor, blake2b_hash, root)
+                                  db, cursor, blake2b_hash, root, file_extension)
                     except Exception as e:
                         print("\033[91m Insert failed: ", e, "\033[0m")
                 else:
@@ -102,7 +107,7 @@ def iter_music(path, db, cursor, hasher):
     go_back('Go back to menu? y/N: ')
 
 
-def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash, root):
+def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash, root, file_extension):
     """Insert parsed info into database"""
     last_updated = str(datetime.now())
 
@@ -113,10 +118,13 @@ def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash, root):
         audio_obj.album,
         audio_obj.track,
         audio_obj.title,
+        file_extension,
         audio_obj.bitrate,
         audio_obj.samplerate,
+        audio_obj.channels,
         audio_obj.genre,
         audio_obj.duration,
+        audio_obj.filesize,
         str(audio_file),
         str(root),
         last_updated,
@@ -125,7 +133,7 @@ def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash, root):
     )]
 
     cursor.executemany(
-        "INSERT INTO music_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", song_info)
+        "INSERT INTO music_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", song_info)
     db.commit()
 
     print("\033[1m\033[96mSUCCESS:\033[0m Info for \033[1m\033[95m%s - %s\033[0m\033[0m inserted to the table!\033[0m" %
