@@ -1,5 +1,5 @@
 # music-catalog
-Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports. Tags are parsed using [tinytag](https://github.com/devsnd/tinytag)).
+Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports. Makes use of the [tinytag](https://github.com/devsnd/tinytag)) and [pandas](https://github.com/pandas-dev/pandas) libraries.
 
 Currently stores the following data:
 
