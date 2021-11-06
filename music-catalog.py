@@ -7,6 +7,7 @@ import pathlib
 from tinytag import TinyTag
 import pandas as pd
 from datetime import date, datetime, time
+from rename import *
 
 date = datetime.now().date()
 time = datetime.now().time().strftime('%H-%M-%S')
@@ -103,8 +104,7 @@ def iter_music(path, db, cursor, hasher):
                 else:
                     print(
                         "\033[92m%s\033[0m already exists in db, skipping file..." % filename)
-    print("\nDONE!\n")
-    go_back('Go back to menu? y/N: ')
+    done = input("\nDone! Hit 'Enter' to return...: ")
 
 
 def add_to_db(audio_file, audio_obj, db, cursor, blake2b_hash, root, file_extension):
@@ -265,6 +265,7 @@ def export_missing(db):
 
 main_menu = {
     "a": [iter_music, lambda: iter_music(path, db, cursor, hasher), "(a)dd"],
+    "r": [rename_dir, lambda: rename_dir(path), "(r)ename"],
     "e": [export_to_csv, lambda: export_to_csv(db), "(e)xport"]
 }
 export_menu = {
