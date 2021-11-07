@@ -45,6 +45,30 @@ Currently supports four export formats:
 
 Bitrate exports are determined using operators: `=, <, >, <=, >=, !=`
 
+## Directory Rename Output
+
+Currently renames directories formatted as such:
+~~~
+%Artist - %Year - %Album (%Extension, %Bitrate)
+~~~
+
+### Special Handling:
+
+- Dirs are renamed using tag data parsed from the first audio file found in said directory. 
+- If the album artist is "VA", "Various", "Various Artists", `%Artist` will be set to "Various", ignoring track artist tags.
+- MP3, M4A, AAC files include CBR/VBR designation in `%Bitrate`.
+
+## File Rename Output
+
+Currently renames files:
+~~~
+%Track - %Artist - %Title %Bitrate.%Extension
+~~~
+
+### Special Handling:
+
+- Zero padding for tracks 1-9
+
 ## Storage
 
 The database resides at `data/music_library.db`.
@@ -52,5 +76,6 @@ The database resides at `data/music_library.db`.
 Timestamped CSV exports are stored in `data/csv_exports`
 
 ## To-Do
-- Blob image data?
-- Add tagging functionality w/Discogs API
+- + Blob image data
+- + Tagging functionality w/Discogs API
+- + Pad zero handling for albums with track total > 100
