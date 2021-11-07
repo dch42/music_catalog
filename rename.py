@@ -63,7 +63,6 @@ def rename_files(path):
                 if audio_obj.track[0].isdigit() and audio_obj.track[0] != "0":
                     if int(audio_obj.track) in range(0, 10):
                         track_num = "0%s" % audio_obj.track
-                        print("track_num == %s" % track_num)
                 else:
                     track_num = audio_obj.track
                 new_file_name = "%s - %s - %s %s%s" % (
