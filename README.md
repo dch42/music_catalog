@@ -29,10 +29,10 @@ To view this README invoke with `--help`
 
 Main interface options are:
 ~~~
-- (a)dd:    Scan for audio files and add to database
+- (a)dd:            Scan for audio files and add to database
 - (d)ir rename: 	Rename dirs based on audio file tags
 - (f)ile rename: 	Rename files based on audio file tags
-- (e)xport: 	    Conditionally export database to csv
+- (e)xport: 	        Conditionally export database to csv
 ~~~
 ## CSV Export
 Currently supports four export formats:
