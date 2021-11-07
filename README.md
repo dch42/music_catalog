@@ -44,7 +44,7 @@ Currently supports four export formats:
 - (m)issing: 	Export files with missing tag data
 ~~~
 
-Bitrate exports are determined using operators: `=, <, >, <=, >=, !=`
+Bitrate and lengthexports are determined using operators: `=, <, >, <=, >=, !=`
 
 ## Directory Rename Output
 
