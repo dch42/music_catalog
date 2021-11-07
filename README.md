@@ -1,5 +1,5 @@
 # music-catalog
-Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports. Makes use of the [tinytag](https://github.com/devsnd/tinytag) and [pandas](https://github.com/pandas-dev/pandas) libraries.
+Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports, file renaming, and directory renaming. Makes use of the [tinytag](https://github.com/devsnd/tinytag) and [pandas](https://github.com/pandas-dev/pandas) libraries.
 
 Currently stores the following data:
 
@@ -26,6 +26,13 @@ Currently stores the following data:
 python3 music-catalog.py ~/path_to_music
 ~~~
 To view this README invoke with `--help`
+
+Main interface options are:
+
+-	(a)dd: 		Scan for audio files and add to database
+-	(d)ir rename: 	Rename dirs based on audio file tags
+-	(f)ile rename: 	Rename files based on audio file tags
+-	(e)xport: 	Conditionally export database to csv
 
 ## CSV Export
 Currently supports four export formats:
