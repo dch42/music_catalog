@@ -76,6 +76,6 @@ The database resides at `data/music_library.db`.
 Timestamped CSV exports are stored in `data/csv_exports`
 
 ## To-Do
-- + Blob image data
-- + Tagging functionality w/Discogs API
-- + Pad zero handling for albums with track total > 100
+- Blob image data
+- Tagging functionality w/Discogs API
+- Pad zero handling for albums with track total > 100
