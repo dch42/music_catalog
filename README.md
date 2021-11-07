@@ -3,23 +3,7 @@ Populates a SQLite database with information parsed from audio files/tags for ea
 
 Currently stores the following data:
 
-- Artist
-- Album Artist
-- Year
-- Album
-- Track Number
-- Song Title
-- Extension
-- Bitrate
-- Sample Frequency
-- Channels
-- Genre
-- Duration (seconds)
-- File Size
-- Full File Path
-- Directory
-- Insert Timestamp
-- BLAKE2B Hash
+- Artist, Album Artist, Year, Album, Track Number, Song Title, Extension, Bitrate, Sample Frequency, Channels, Genre, Duration, File Size, Full File Path, Directory, Insert Timestamp, BLAKE2B Hash
 
 ## Usage
 ~~~
