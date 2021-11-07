@@ -79,5 +79,6 @@ def rename_files(path):
 
 
 if __name__ == "__main__":
-    pyfiglet.print_figlet("RenameDir")
+    pyfiglet.print_figlet("Renamer")
     rename_dir(path)
+    rename_files(path)
