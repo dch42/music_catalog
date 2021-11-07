@@ -265,7 +265,8 @@ def export_missing(db):
 
 main_menu = {
     "a": [iter_music, lambda: iter_music(path, db, cursor, hasher), "(a)dd"],
-    "r": [rename_dir, lambda: rename_dir(path), "(r)ename"],
+    "d": [rename_dir, lambda: rename_dir(path), "(d)ir rename"],
+    "f": [rename_files, lambda: rename_files(path), "(f)ile rename"],
     "e": [export_to_csv, lambda: export_to_csv(db), "(e)xport"]
 }
 export_menu = {
