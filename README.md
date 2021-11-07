@@ -32,12 +32,12 @@ Main interface options are:
 - (a)dd: 		Scan for audio files and add to database
 - (d)ir rename: 	Rename dirs based on audio file tags
 - (f)ile rename: 	Rename files based on audio file tags
-- (e)xport: 	Conditionally export database to csv
+- (e)xport: 	    Conditionally export database to csv
 ~~~
 ## CSV Export
 Currently supports four export formats:
 ~~~
-- (f)ull: 	    Export all music info to csv
+- (f)ull: 	   Export all music info to csv
 - (a)lbums: 	Export album info to csv
 - (b)itrate: 	Export conditionally by bitrate
 - (l)ength: 	Export conditionally by song duration
