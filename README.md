@@ -67,4 +67,4 @@ Timestamped CSV exports are stored in `data/csv_exports`
 
 ## Acknowledgements
 
-Makes use of the [tinytag](https://github.com/devsnd/tinytag) and [🐼](https://github.com/pandas-dev/pandas) libraries.
+Makes use of the wonderful [tinytag](https://github.com/devsnd/tinytag) and [🐼](https://github.com/pandas-dev/pandas) libraries.
