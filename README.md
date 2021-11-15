@@ -1,5 +1,5 @@
 # music-catalog
-Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports, file renaming, and directory renaming. Makes use of the [tinytag](https://github.com/devsnd/tinytag) and [pandas](https://github.com/pandas-dev/pandas) libraries.
+Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports, file renaming, and directory renaming. 
 
 Currently stores the following data:
 
@@ -64,3 +64,7 @@ Timestamped CSV exports are stored in `data/csv_exports`
 - Blob image data
 - Tagging functionality w/Discogs API
 - Pad zero handling for albums with track total > 100
+
+## Acknowledgements
+
+Makes use of the [tinytag](https://github.com/devsnd/tinytag) and [🐼](https://github.com/pandas-dev/pandas) libraries.
