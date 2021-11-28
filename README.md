@@ -21,7 +21,7 @@ make
 
 - The script can be invoked with or without arguments. 
 - Invoking without `-a`, `-r`, or `-e` will launch an interactive menu instead.
-- Invoking ***without*** `-p` will set default path to '.'.
+- Invoking ***without*** `-p` will set default path to cwd.
 
 To **add** music from **path** to database:
 ~~~
