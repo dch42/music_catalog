@@ -94,6 +94,7 @@ Timestamped CSV exports are stored in `data/csv_exports`
 - Blob image data
 - Tagging functionality w/Discogs API
 - Pad zero handling for albums with track total > 100
+- Add empty tag check to renaming
 
 ## Acknowledgements
 
