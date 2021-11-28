@@ -3,6 +3,7 @@
 
 import os
 import sys
+import argparse
 import pathlib
 import hashlib
 import sqlite3
@@ -16,12 +17,22 @@ import export as ex
 date = datetime.now().date()
 time = datetime.now().time().strftime('%H-%M-%S')
 
-path = sys.argv[1]
+
 hasher = hashlib.blake2b()
 extensions = [".mp3", ".m4a", ".flac", ".ogg", ".opus", ".wma", ".wav"]
 
 db = sqlite3.connect("./data/music_library.db")
 cursor = db.cursor()
+
+parser = argparse.ArgumentParser(
+    description="Parse audio file data and store in db")
+parser.add_argument(
+    "-p", "--path", type=str, help='path to audio files')
+parser.add_argument(
+    "-a", "--add", help='scan and add file info to database', action="store_true")
+args = parser.parse_args()
+
+path = args.path if args.path else '.'
 
 
 def menu_loop(menu):
@@ -41,7 +52,7 @@ def menu_loop(menu):
             menu[choice][1]()
 
 
-def iter_music(path):
+def iter_music():
     """Scan for audio files and add to database"""
     cursor.execute("""CREATE TABLE IF NOT EXISTS music_info(
         Album_Artist TEXT,
@@ -84,8 +95,6 @@ def iter_music(path):
                         buf = file_to_hash.read()
                         hasher.update(buf)
                         blake2b_hash = str(hasher.hexdigest())
-                        # print(
-                        #     "\033[1mHASH:\033[0m", blake2b_hash)
                     tqdm.write(
                         "==> \033[1mParsing\033[0m tag data...")
                     try:
@@ -125,7 +134,6 @@ def add_to_db(audio_file, audio_obj, blake2b_hash, root, file_extension):
         str(root),
         last_updated,
         blake2b_hash
-
     )]
 
     cursor.executemany(
@@ -133,7 +141,7 @@ def add_to_db(audio_file, audio_obj, blake2b_hash, root, file_extension):
     db.commit()
 
     tqdm.write(
-        f"\033[1m\033[96mSUCCESS:\033[0m Info for \033[1m\033[95m{str(audio_obj.artist)} - {str(audio_obj.title)}\033[0m\033[0m inserted to the table!\033[0m")
+        f"\033[1m\033[92m[SUCCESS]\033[0m Info for \033[1m\033[95m{str(audio_obj.artist)} - {str(audio_obj.title)}\033[0m\033[0m inserted to the table!\033[0m")
 
 
 def export_to_csv():
@@ -142,7 +150,7 @@ def export_to_csv():
 
 
 main_menu = {
-    "a": [iter_music, lambda: iter_music(path), "(a)dd"],
+    "a": [iter_music, lambda: iter_music(), "(a)dd"],
     "d": [rn.rename_dir, lambda: rn.rename_dir(path), "(d)ir rename"],
     "f": [rn.rename_files, lambda: rn.rename_files(path), "(f)ile rename"],
     "e": [export_to_csv, lambda: export_to_csv(db), "(e)xport"]
@@ -158,7 +166,7 @@ export_menu = {
 ########################################################
 
 if __name__ == '__main__':
-    if sys.argv[1] == "--help":
-        os.system("less README.md")
+    if args.add:
+        iter_music()
     else:
         menu_loop(main_menu)
