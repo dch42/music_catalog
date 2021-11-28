@@ -14,23 +14,41 @@ extensions = [".mp3", ".aac", ".m4a",
 
 def check_empties(audio_obj):
     """Get user input for critical empty tags"""
-    if audio_obj.artist == '' or audio_obj.artist == 'None':
+    if audio_obj.artist == '' or audio_obj.artist == None:
         artist = input('`Artist` is blank, enter a value: ')
         artist = artist.replace('/', '')
+        artist = artist.replace(':', '-')
     else:
         artist = audio_obj.artist
         artist = artist.replace('/', '')
-    if audio_obj.album == '' or audio_obj.album == 'None':
+        artist = artist.replace(':', '-')
+    if audio_obj.album == '' or audio_obj.album == None:
         album = input('`Album` is blank, enter a value: ')
         album = album.replace('/', '')
+        album = album.replace(':', '-')
     else:
         album = audio_obj.album
         album = album.replace('/', '')
-    if str(audio_obj.year) == '' or str(audio_obj.year) == 'None':
+        album = album.replace(':', '-')
+    if str(audio_obj.year) == '' or audio_obj.year == None:
         year = input('`Year` is blank, enter a value: ')
     else:
         year = str(audio_obj.year)
     return artist, year, album
+
+
+def get_bitrate(filename, audio_obj):
+    """Get bitrate for albums"""
+    if filename.endswith(tuple(extensions[0:3])) and audio_obj.bitrate not in cbr:
+        bitrate = f"{int(audio_obj.bitrate)} VBR"
+    elif audio_obj.bitrate in cbr:
+        bitrate = f"{int(audio_obj.bitrate)} CBR"
+    else:
+        try:
+            bitrate = int(audio_obj.bitrate)
+        except Exception as error:
+            print(f"\033[91m Bitrate Error: {error}\033[0m\n")
+    return bitrate
 
 
 def rename_dir(path):
@@ -48,21 +66,13 @@ def rename_dir(path):
                     audio_obj = TinyTag.get(f"{audio_file}")
                 except Exception as error:
                     print(f"\033[91m Parsing failed: {error}\033[0m\n")
-                if filename.endswith(tuple(extensions[0:3])) and audio_obj.bitrate not in cbr:
-                    bitrate = f"{int(audio_obj.bitrate)} VBR"
-                elif audio_obj.bitrate in cbr:
-                    bitrate = f"{int(audio_obj.bitrate)} CBR"
-                else:
-                    try:
-                        bitrate = int(audio_obj.bitrate)
-                    except Exception as error:
-                        print(f"\033[91m Bitrate Error: {error}\033[0m\n")
+                bitrate = get_bitrate(filename, audio_obj)
                 artist, year, album = check_empties(audio_obj)
                 if audio_obj.albumartist in various:
                     artist = "Various"
                 new_dir_name = f"{artist} - {year} - {album} ({file_extension}, {bitrate})"
                 new_dir_path = os.path.join(
-                    path, root.split('/')[-2], new_dir_name)
+                    path, os.path.split(root)[-2], new_dir_name)  # root.split('/')[-2],
                 print(f'{new_dir_path=}')
                 ok = input(
                     f"\nRename `\033[93m{os.path.basename(root)}\033[0m` \n\t >> `\033[92m{new_dir_name}\033[0m`? (y/N):")
