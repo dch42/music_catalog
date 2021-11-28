@@ -19,9 +19,8 @@ make
 
 ## Usage
 
-- The script can be invoked with or without arguments. 
+- The script requires a path to audio files to be passed with `-p`. 
 - Invoking without `-a`, `-r`, or `-e` will launch an interactive menu instead.
-- Invoking ***without*** `-p` will set default path to cwd.
 
 To **add** music from **path** to database:
 ~~~
@@ -29,12 +28,14 @@ To **add** music from **path** to database:
 ~~~
 
 ### Options
-- `-h, --help`
-    - show this option list and exit
+- `-p, --path PATH` **[REQUIRED]**
+    - path to audio files
 - `-a, --add`
     - scan and add file info to database
-- `-p, --path PATH`
-    - path to audio files
+- `-h, --help`
+    - show this option list and exit
+
+
 
 ### Menu
 Main menu interface options are:
