@@ -28,7 +28,7 @@ To **add** music from **path** to database:
 ~~~
 
 ### Options
-- `-p, --path PATH` **[REQUIRED]**
+- `-p, --path PATH` *(REQUIRED)*
     - path to audio files
 - `-a, --add`
     - scan and add file info to database
