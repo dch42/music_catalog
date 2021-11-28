@@ -19,11 +19,11 @@ make
 
 ## Usage
 
-The script can be invoked with or without arguments. 
-Invoking without `-a`, `-r`, or `-e` will launch an interactive menu instead.
-Invoking ***without*** `-p` will set default path to `.`.
+- The script can be invoked with or without arguments. 
+- Invoking without `-a`, `-r`, or `-e` will launch an interactive menu instead.
+- Invoking ***without*** `-p` will set default path to '.'.
 
-To *add* music from *path* to database:
+To **add** music from **path** to database:
 ~~~
 ./music_catalog.py -a -p ~/path/to/music
 ~~~
@@ -36,7 +36,7 @@ To *add* music from *path* to database:
 - `-p, --path PATH`
     - path to audio files
 
-
+### Menu
 Main menu interface options are:
 ~~~
 - (a)dd:                Scan for audio files and add to database
@@ -44,7 +44,7 @@ Main menu interface options are:
 - (f)ile rename: 	Rename files based on audio file tags
 - (e)xport: 	        Conditionally export database to csv
 ~~~
-## CSV Export
+### CSV Export
 Currently supports four export formats:
 ~~~
 - (f)ull: 	Export all music info to csv
