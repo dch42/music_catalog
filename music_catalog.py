@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Parse audio file data and store in db"""
 
 import os
