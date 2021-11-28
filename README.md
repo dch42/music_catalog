@@ -1,17 +1,43 @@
-# music-catalog
+# music_catalog
 Populates a SQLite database with information parsed from audio files/tags for easier music library management. Supports conditional CSV exports, file renaming, and directory renaming. 
 
 Currently stores the following data:
 
-- Artist, Album Artist, Year, Album, Track Number, Song Title, Extension, Bitrate, Sample Frequency, Channels, Genre, Duration, File Size, Full File Path, Directory, Insert Timestamp, BLAKE2B Hash
+- `Artist`, `Album Artist`, `Year`, `Album`, `Track Number`, `Song Title`, `Extension`, `Bitrate`, `Sample Frequency`, `Channels`, `Genre`, `Duration`, `File Size`, `Full File Path`, `Directory`, `Insert Timestamp`, `BLAKE2B Hash`
+
+## Setup 🔧
+clone the repo and change to directory:
+~~~
+git clone https://github.com/dch42/music_catalog.git && cd music_catalog
+~~~
+
+Running `make` will install dependencies and add executable permissions to the script.
+
+~~~
+make
+~~~
 
 ## Usage
-~~~
-python3 music-catalog.py ~/path_to_music
-~~~
-To view this README invoke with `--help`
 
-Main interface options are:
+The script can be invoked with or without arguments. 
+Invoking without `-a`, `-r`, or `-e` will launch an interactive menu instead.
+Invoking ***without*** `-p` will set default path to `.`.
+
+To *add* music from *path* to database:
+~~~
+./music_catalog.py -a -p ~/path/to/music
+~~~
+
+### Options
+- `-h, --help`
+    - show this option list and exit
+- `-a, --add`
+    - scan and add file info to database
+- `-p, --path PATH`
+    - path to audio files
+
+
+Main menu interface options are:
 ~~~
 - (a)dd:                Scan for audio files and add to database
 - (d)ir rename: 	Rename dirs based on audio file tags
