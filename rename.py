@@ -12,8 +12,6 @@ various = ["VA", "Various", "Various Artists"]
 extensions = [".mp3", ".aac", ".m4a",
               ".flac", ".ogg", ".opus", ".wma", ".wav"]
 
-path = sys.argv[1]
-
 
 def rename_dir(path):
     """Rename dirs based on audio file tags"""
@@ -37,7 +35,7 @@ def rename_dir(path):
                     artist = "Various"
                 else:
                     artist = audio_obj.artist
-                new_dir_name = f"{artist} - {str(audio_obj.year)} - {audio_obj.album} ({file_extension}, {bitrate}"
+                new_dir_name = f"{artist} - {str(audio_obj.year)} - {audio_obj.album} ({file_extension}, {bitrate})"
                 new_dir_path = os.path.join(path, new_dir_name)
                 try:
                     os.rename(root, new_dir_path)
