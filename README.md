@@ -32,8 +32,11 @@ To **add** music from **path** to database:
     - path to audio files
 - `-a, --add`
     - scan and add file info to database
+- `-r, --rename`
+    - rename files and folders using tag data
 - `-h, --help`
     - show this option list and exit
+
 
 
 
