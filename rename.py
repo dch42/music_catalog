@@ -16,6 +16,7 @@ extensions = [".mp3", ".aac", ".m4a",
 
 
 def update_tags(file_extension, file, key, tag_value):
+    """Write tag info"""
     if file_extension == 'MP3':
         mutagen_obj = MP3(f'{file}', ID3=EasyID3)
     elif file_extension == 'FLAC':
@@ -25,6 +26,7 @@ def update_tags(file_extension, file, key, tag_value):
 
 
 def cleanse_chars(value):
+    """Sanitize tag strings for dir/filenames"""
     value = value.replace('/', '')
     value = value.replace(':', '-')
     value = value.replace('?', '')
