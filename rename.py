@@ -1,9 +1,14 @@
 """Rename files and dirs according to parsed tag data"""
 
+from hashlib import new
 import os
 import pathlib
 import pyfiglet
 from tinytag import TinyTag
+from mutagen.easyid3 import EasyID3
+import mutagen
+from mutagen.mp3 import MP3
+from mutagen.flac import FLAC
 
 # dirty but can't read header afaict so...
 cbr = [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
@@ -12,29 +17,43 @@ extensions = [".mp3", ".aac", ".m4a",
               ".flac", ".ogg", ".opus", ".wma", ".wav"]
 
 
-def check_empties(audio_obj):
+def update_tags(file_extension, file, key, tag_value):
+    if file_extension == 'MP3':
+        mutagen_obj = MP3(f'{file}', ID3=EasyID3)
+    elif file_extension == 'FLAC':
+        mutagen_obj = FLAC(f'{file}')
+    mutagen_obj[f'{key}'] = f'{tag_value}'
+    mutagen_obj.save()
+
+
+def cleanse_chars(value):
+    value = value.replace('/', '')
+    value = value.replace(':', '-')
+    value = value.replace('?', '')
+    return value
+
+
+def check_empties(audio_obj, root):
     """Get user input for critical empty tags"""
-    if audio_obj.artist == '' or audio_obj.artist == None:
-        artist = input('`Artist` is blank, enter a value: ')
-        artist = artist.replace('/', '')
-        artist = artist.replace(':', '-')
-    else:
-        artist = audio_obj.artist
-        artist = artist.replace('/', '')
-        artist = artist.replace(':', '-')
-    if audio_obj.album == '' or audio_obj.album == None:
-        album = input('`Album` is blank, enter a value: ')
-        album = album.replace('/', '')
-        album = album.replace(':', '-')
-    else:
-        album = audio_obj.album
-        album = album.replace('/', '')
-        album = album.replace(':', '-')
-    if str(audio_obj.year) == '' or audio_obj.year == None:
-        year = input('`Year` is blank, enter a value: ')
-    else:
-        year = str(audio_obj.year)
-    return artist, year, album
+    check_empty_tags = ['artist', 'year', 'album']
+    new_tags = []
+    for file in os.listdir(root):
+        if file.endswith((tuple(extensions))):
+            file_extension = pathlib.Path(file).suffix[1:].upper()
+            f = os.path.join(root, file)
+            for tag in check_empty_tags:
+                if getattr(audio_obj, tag) in (None, ''):
+                    new_tag_val = input(
+                        f'`{tag.capitalize()}` is blank, enter a value: ')
+                    if tag == 'year':  # purge after switching fully to mutagen
+                        tag = 'date'
+                    update_tags(file_extension, f, tag, new_tag_val)
+                    new_tag_val = cleanse_chars(new_tag_val)
+                else:
+                    new_tag_val = getattr(audio_obj, tag)
+                    new_tag_val = cleanse_chars(new_tag_val)
+                new_tags.append(new_tag_val)
+            return new_tags
 
 
 def get_bitrate(filename, audio_obj):
@@ -67,13 +86,12 @@ def rename_dir(path):
                 except Exception as error:
                     print(f"\033[91m Parsing failed: {error}\033[0m\n")
                 bitrate = get_bitrate(filename, audio_obj)
-                artist, year, album = check_empties(audio_obj)
+                artist, year, album = check_empties(audio_obj, root)
                 if audio_obj.albumartist in various:
                     artist = "Various"
                 new_dir_name = f"{artist} - {year} - {album} ({file_extension}, {bitrate})"
                 new_dir_path = os.path.join(
-                    path, os.path.split(root)[-2], new_dir_name)  # root.split('/')[-2],
-                print(f'{new_dir_path=}')
+                    path, os.path.split(root)[-2], new_dir_name)
                 ok = input(
                     f"\nRename `\033[93m{os.path.basename(root)}\033[0m` \n\t >> `\033[92m{new_dir_name}\033[0m`? (y/N):")
                 if ok.lower() == 'y' or ok.lower() == 'yes':
