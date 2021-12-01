@@ -80,7 +80,7 @@ def rename_dir(path):
             if filename.suffix in tuple(extensions):
                 file_extension = filename.suffix[1:].upper()
                 print(
-                    f"\033[94m==>\033[0m \033[1mParsing\033[0m tag data for {filename.parts[-2]}...")
+                    f"\033[94m==>\033[0m \033[1mParsing\033[0m tag data \for {filename.parts[-2]}...")
                 try:
                     audio_obj = TinyTag.get(f"{filename}")
                 except Exception as error:
@@ -97,7 +97,8 @@ def rename_dir(path):
                     try:
                         os.rename(filename.parents[0], new_dir_path)
                         print(
-                            f"\033[1m\033[92m[SUCCESS]\033[0m Renamed {filename.parts[-2]}... \n\t\033[93m\x1b[5m>>\033[0m\033[0m \033[95m\033[1m{new_dir_name}\033[0m\033[0m\n")
+                            f"\033[1m\033[92m[SUCCESS]\033[0m Renamed {filename.parts[-2]}... \
+                                \n\t\033[93m\x1b[5m>>\033[0m\033[0m \033[95m\033[1m{new_dir_name}\033[0m\033[0m\n")
                     except Exception as error:
                         print(f"\033[91m Rename failed: {error}\033[0m\n")
                 else:
@@ -135,7 +136,8 @@ def rename_files(path):
                     try:
                         os.rename(audio_file, new_file_path)
                         print(
-                            f"\033[1m\033[92m[SUCCESS]\033[0m Renamed {audio_file}... \n\t\033[93m\x1b[5m>>\033[0m\033[0m \033[95m\033[1m{new_file_path}\033[0m\033[0m\n")
+                            f"\033[1m\033[92m[SUCCESS]\033[0m Renamed {audio_file}... \
+                                \n\t\033[93m\x1b[5m>>\033[0m\033[0m \033[95m\033[1m{new_file_path}\033[0m\033[0m\n")
                     except Exception as error:
                         print(f"\033[91m Rename failed: {error}\033[0m\n")
         input("\nDone! Hit 'Enter' to rename next album...: ")
