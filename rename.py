@@ -15,6 +15,16 @@ extensions = [".mp3", ".aac", ".m4a",
               ".flac", ".ogg", ".opus", ".wma", ".wav"]
 
 
+def pad_zeroes(audio_obj):
+    """Pad zeros on track numbers"""
+    if audio_obj.track[0].isdigit() and audio_obj.track[0] != '0':
+        if int(audio_obj.track) in range(0, 10):
+            track_num = f"0{audio_obj.track}"
+        else:
+            track_num = audio_obj.track
+    return track_num
+
+
 def update_tags(file_extension, file, key, tag_value):
     """Write tag info"""
     if file_extension == 'MP3':
@@ -80,7 +90,7 @@ def rename_dir(path):
             if filename.suffix in tuple(extensions):
                 file_extension = filename.suffix[1:].upper()
                 print(
-                    f"\033[94m==>\033[0m \033[1mParsing\033[0m tag data \for {filename.parts[-2]}...")
+                    f"\033[94m==>\033[0m \033[1mParsing\033[0m tag data for {filename.parts[-2]}...")
                 try:
                     audio_obj = TinyTag.get(f"{filename}")
                 except Exception as error:
@@ -119,11 +129,7 @@ def rename_files(path):
                 print(
                     "\033[94m==>\033[0m \033[1mParsing\033[0m tag data...")
                 audio_obj = TinyTag.get(f"{audio_file}")
-                if audio_obj.track[0].isdigit() and audio_obj.track[0] != '0':
-                    if int(audio_obj.track) in range(0, 10):
-                        track_num = f"0{audio_obj.track}"
-                else:
-                    track_num = audio_obj.track
+                track_num = pad_zeroes(audio_obj)
                 if audio_obj.artist == '' or audio_obj.album == '':
                     print(
                         f'\033[91mSkipping {filename}, blank tags...')
