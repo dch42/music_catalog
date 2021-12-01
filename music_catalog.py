@@ -27,12 +27,14 @@ cursor = db.cursor()
 parser = argparse.ArgumentParser(
     description="Parse audio file data and store in db")
 parser.add_argument(
-    "-p", "--path", type=str, help='path to audio files')
+    "-p", "--path", type=str, required=True, help='path to audio files')
 parser.add_argument(
     "-a", "--add", help='scan and add file info to database', action="store_true")
+parser.add_argument(
+    "-r", "--rename", help='rename files and folders using tag data', action="store_true")
 args = parser.parse_args()
 
-path = args.path if args.path else '.'
+path = args.path
 
 
 def menu_loop(menu):
@@ -166,6 +168,9 @@ export_menu = {
 ########################################################
 
 if __name__ == '__main__':
+    if args.rename:
+        rn.rename_dir(path)
+        rn.rename_files(path)
     if args.add:
         iter_music()
     else:
