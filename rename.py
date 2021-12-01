@@ -1,12 +1,10 @@
 """Rename files and dirs according to parsed tag data"""
 
-from hashlib import new
 import os
 from pathlib import Path
 import pyfiglet
 from tinytag import TinyTag
 from mutagen.easyid3 import EasyID3
-import mutagen
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 
