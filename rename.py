@@ -2,7 +2,7 @@
 
 from hashlib import new
 import os
-import pathlib
+from pathlib import Path
 import pyfiglet
 from tinytag import TinyTag
 from mutagen.easyid3 import EasyID3
@@ -33,14 +33,14 @@ def cleanse_chars(value):
     return value
 
 
-def check_empties(audio_obj, root):
+def check_empties(audio_obj, filename):
     """Get user input for critical empty tags"""
     check_empty_tags = ['artist', 'year', 'album']
     new_tags = []
-    for file in os.listdir(root):
+    for file in os.listdir(filename.parents[0]):
         if file.endswith((tuple(extensions))):
-            file_extension = pathlib.Path(file).suffix[1:].upper()
-            f = os.path.join(root, file)
+            file_extension = Path(file).suffix[1:].upper()
+            f = os.path.join(filename.parents[0], file)
             for tag in check_empty_tags:
                 if getattr(audio_obj, tag) in (None, ''):
                     new_tag_val = input(
@@ -58,7 +58,7 @@ def check_empties(audio_obj, root):
 
 def get_bitrate(filename, audio_obj):
     """Get bitrate for albums"""
-    if filename.endswith(tuple(extensions[0:3])) and audio_obj.bitrate not in cbr:
+    if filename.suffix in tuple(extensions[0:3]) and audio_obj.bitrate not in cbr:
         bitrate = f"{int(audio_obj.bitrate)} VBR"
     elif audio_obj.bitrate in cbr:
         bitrate = f"{int(audio_obj.bitrate)} CBR"
@@ -75,34 +75,33 @@ def rename_dir(path):
     print(f"\nWill run directory rename script in {path}")
     input("\nHit 'Enter' to run, 'CTRL+C' to quit: ")
     for root, dirs, files in os.walk(path, topdown=False):
-        for filename in files:
-            if filename.endswith(tuple(extensions)):
-                audio_file = os.path.join(root, filename)
-                file_extension = pathlib.Path(audio_file).suffix[1:].upper()
+        music_path = Path(root)
+        for filename in music_path.rglob('*'):
+            if filename.suffix in tuple(extensions):
+                file_extension = filename.suffix[1:].upper()
                 print(
-                    f"\033[94m==>\033[0m \033[1mParsing\033[0m tag data for {os.path.basename(root)}...")
+                    f"\033[94m==>\033[0m \033[1mParsing\033[0m tag data for {filename.parts[-2]}...")
                 try:
-                    audio_obj = TinyTag.get(f"{audio_file}")
+                    audio_obj = TinyTag.get(f"{filename}")
                 except Exception as error:
                     print(f"\033[91m Parsing failed: {error}\033[0m\n")
                 bitrate = get_bitrate(filename, audio_obj)
-                artist, year, album = check_empties(audio_obj, root)
+                artist, year, album = check_empties(audio_obj, filename)
                 if audio_obj.albumartist in various:
                     artist = "Various"
                 new_dir_name = f"{artist} - {year} - {album} ({file_extension}, {bitrate})"
-                new_dir_path = os.path.join(
-                    path, os.path.split(root)[-2], new_dir_name)
+                new_dir_path = filename.parents[1].joinpath(new_dir_name)
                 ok = input(
-                    f"\nRename `\033[93m{os.path.basename(root)}\033[0m` \n\t >> `\033[92m{new_dir_name}\033[0m`? (y/N):")
+                    f"\nRename `\033[93m{filename.parts[-2]}\033[0m` \n\t >> `\033[92m{new_dir_name}\033[0m`? (y/N):")
                 if ok.lower() == 'y' or ok.lower() == 'yes':
                     try:
-                        os.rename(root, new_dir_path)
+                        os.rename(filename.parents[0], new_dir_path)
                         print(
-                            f"\033[1m\033[92m[SUCCESS]\033[0m Renamed {root}... \n\t\033[93m\x1b[5m>>\033[0m\033[0m \033[95m\033[1m{new_dir_name}\033[0m\033[0m\n")
+                            f"\033[1m\033[92m[SUCCESS]\033[0m Renamed {filename.parts[-2]}... \n\t\033[93m\x1b[5m>>\033[0m\033[0m \033[95m\033[1m{new_dir_name}\033[0m\033[0m\n")
                     except Exception as error:
                         print(f"\033[91m Rename failed: {error}\033[0m\n")
                 else:
-                    print(f'Skipping {os.path.basename(root)}...\n')
+                    print(f'Skipping {filename.parts[-2]}...\n')
                 break
     input("\nDone! Hit 'Enter' to return...: ")
 
