@@ -62,6 +62,7 @@ Currently supports four export formats:
 Bitrate and length exports are determined using operators: `=, <, >, <=, >=, !=`
 
 ## Directory Rename Output
+⚠️ Warning: Not extensively tested. Use at your own risk.
 
 Currently renames directories formatted as such:
 ~~~
